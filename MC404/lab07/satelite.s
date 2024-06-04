@@ -137,6 +137,7 @@ convert:
     li a2, 32
     li a3, 10
     li a4, 0
+    li t5, -1
     # 1 identificar se é negativo X (s6)
     blt s6, a4, neg
     # 1.1 Adicionar sinal ao result
@@ -146,32 +147,33 @@ convert:
     neg:
         li t3, 45
         sb t3, 0(s1)
+        mul s6, s6, t5
     cont:
     # 1.2 Adicionar números ao result
         # Conversão 1
         rem t3, s6, a3
-        addi t3, t3, 0
+        addi t3, t3, 48
         div s6, s6, a3
         # Colocando dentro do buffer 1
-        sb t3, 1(s1)
+        sb t3, 4(s1)
         # Conversão 2
         rem t3, s6, a3
-        addi t3, t3, 0
+        addi t3, t3, 48
         div s6, s6, a3
         # Colocando dentro do buffer 2
-        sb t3, 2(s1)
+        sb t3, 3(s1)
         # Conversão 3
         rem t3, s6, a3
-        addi t3, t3, 0
+        addi t3, t3, 48
         div s6, s6, a3
         # Colocando dentro do buffer 3
-        sb t3, 3(s1)
+        sb t3, 2(s1)
         # Conversão 4
         rem t3, s6, a3
-        addi t3, t3, 0
+        addi t3, t3, 48
         div s6, s6, a3
         # Colocando dentro do buffer 4
-        sb t3, 4(s1)
+        sb t3, 1(s1)
     # ___ Adiciona espaço ___
         sb a2, 5(s1)
     # 2 identificar se é negativo Y (s7)
@@ -183,32 +185,33 @@ convert:
     neg2:
         li t3, 45
         sb t3, 6(s1)
+        mul s7, s7, t5
     cont2:
     # 1.2 Adicionar números ao result
         # Conversão 1
         rem t3, s7, a3
-        addi t3, t3, 0
+        addi t3, t3, 48
         div s7, s7, a3
         # Colocando dentro do buffer 1
-        sb t3, 7(s1)
+        sb t3, 10(s1)
         # Conversão 2
         rem t3, s7, a3
-        addi t3, t3, 0
+        addi t3, t3, 48
         div s7, s7, a3
         # Colocando dentro do buffer 2
-        sb t3, 8(s1)
+        sb t3, 9(s1)
         # Conversão 3
         rem t3, s7, a3
-        addi t3, t3, 0
+        addi t3, t3, 48
         div s7, s7, a3
         # Colocando dentro do buffer 3
-        sb t3, 9(s1)
+        sb t3, 8(s1)
         # Conversão 4
         rem t3, s7, a3
-        addi t3, t3, 0
+        addi t3, t3, 48
         div s7, s7, a3
         # Colocando dentro do buffer 4
-        sb t3, 10(s1)
+        sb t3, 7(s1)
     # ___ Adiciona \n ___
     sb a3, 11(s1)
     ret
@@ -225,7 +228,7 @@ main:
     sw ra, 0(sp)
 
     # Código aqui
-    jal ra, read
+    jal ra, read2
     la s0, input_address
     la s1, result
 
@@ -331,6 +334,14 @@ read:
     ecall
     ret
 
+read2:
+    li a0, 0            # file descriptor = 0 (stdin)
+    la a1, input_address # buffer
+    li a2, 12           # size - Reads 20 bytes.
+    li a7, 63           # syscall read (63)
+    ecall
+    ret
+
 write:
     li a0, 1            # file descriptor = 1 (stdout)
     la a1, result       # buffer
@@ -344,5 +355,3 @@ write:
 input_address: .skip 0x20  # buffer
 
 result: .skip 0x12
-
-
