@@ -320,7 +320,8 @@ main:
         bltu s4, a2, for
         mv s6, s2 # !!!
         jal ra, coordenada
-        jal ra, convert
+        jal ra, 
+        
     jal ra, write
     lw ra,0(sp)
     addi sp, sp, 4
