@@ -12,8 +12,8 @@ main:
     sw ra, 0(sp)
 
     jal ra, read
-    la s1, input_address
-    la s0, result
+    la s0, input_address
+    la s1, result
     li s2, 0
     li s3, 0
     li t5, 10
@@ -23,7 +23,7 @@ main:
 
     # Verifica sinal 
     # Inicializando s2 com 0 e criando a temporária
-    add s11, s1, t6
+    add s11, s0, t6
     lb t1, 0(s11)
     li s11, 0 
     # Atualiza t6
@@ -41,7 +41,7 @@ main:
     li a4, -1
     convert:
     # Inicializando s2 com 0 e criando a temporária
-    add s11, s1, t6
+    add s11, s0, t6
     lb t1, 0(s11)
     li s11, 0 
     # Atualiza t6
@@ -78,52 +78,47 @@ main:
     j loop
 
     nao_tem:
-    li t6, 1
-    sb a3, 0(s0)
-    sb t6, 1(s0)
-    sb t5, 2(s0)
+    li s3, 45
+    sb s3, 0(s1)
+    li s3, 49
+    sb s3, 1(s1)
+    li s3, 10
+    sb s3, 2(s1)
     j encerra
-
 
     achou:
     # Inicializando e criando a variável temporária
     li t2, 0
-    li s11, 0 
+    li t5, 10
     # Conversão 
     rem t3, s3, t5
     addi t3, t3, 48
     div s3, s3, t5
     # Atualiza t6
     addi t6, t6, 1
-    # Colocando dentro do buffer 
-    sb t3, 0(s0)
+    # Colocando dentro da pilha
+    addi sp, sp, -4 
+    sb t3, 0(sp)
     # Compara
     beq s3, t2, processamento
-    srai s0, s0, 1
     j achou
 
     # devolve o nodo certo
     processamento:
-    addi t6, t6, 1
-    add s11, s0, t6
-    li t6, 0
-    sb t6, 0(s11)
-
-    /* 
-    li t5, 0
-
+    addi t2, t6, 0
+    li t3, 0
     inverte:
-    li s11, 0 
+    add s11, s1, t3
+    lb t4, 0(sp)
+    sb t4, 0(s11)
+    li s11, 0
+    addi t3, t3, 1
+    addi sp, sp, 4 
     addi t6, t6, -1
-    add s10, s4, t5
-    add s11, s0, t6
-    lb t3, 0(s10)
-    sb t3, 0(s11)
-    addi t5, t5, 1
-    bnez t6, inverte
-    li t5, 0
-    sb t5, 1(s11)
-    */
+    bnez t6, inverte'
+    add s11, s1, t3
+    li t4, 10
+    sb t4, 0(s11)
 
     encerra:
     jal ra, write
